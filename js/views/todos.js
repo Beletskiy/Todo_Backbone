@@ -5,6 +5,8 @@ app.TodoView = Backbone.View.extend({
     // Cache the template function for a single item.
     template: _.template($('#item-template').html()),
     events: {
+        'click .toggle': 'toggleCompleted',
+        'click .destroy': 'clear',
         'dblclick label': 'edit',
         'keypress .edit': 'updateOnEnter',
         'blur .edit': 'close'
@@ -15,11 +17,13 @@ app.TodoView = Backbone.View.extend({
     // convenience.
     initialize: function () {
         this.listenTo(this.model, 'change', this.render);
+        this.listenTo(this.model, 'destroy', this.remove);
     },
     // Re-render the titles of the todo item
     render: function () {
         this.$el.html(this.template(this.model.toJSON()));
         this.$input = this.$('.edit');
+        this.$el.toggleClass('completed', this.model.get('completed'));
         return this;
     },
     // Switch this view into `"editing"` mode, displaying the input field
@@ -40,5 +44,14 @@ app.TodoView = Backbone.View.extend({
         if (e.which === ENTER_KEY) {
             this.close();
         }
+    },
+    // Toggle the `"completed"` state of the model.
+    toggleCompleted: function () {
+        this.model.toggle();
+    },
+    // Remove the item, destroy the model from *localStorage* and delete its view.
+    clear: function () {
+        this.model.destroy();
     }
+
 });
