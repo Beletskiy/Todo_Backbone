@@ -21,10 +21,24 @@ app.TodoView = Backbone.View.extend({
     },
     // Re-render the titles of the todo item
     render: function () {
+        if (this.model.changed.id !== undefined) {
+            return;
+        }
         this.$el.html(this.template(this.model.toJSON()));
         this.$input = this.$('.edit');
+        this.toggleVisible();
         this.$el.toggleClass('completed', this.model.get('completed'));
         return this;
+    },
+
+    toggleVisible: function () {
+        this.$el.toggleClass('hidden', this.isHidden());
+    },
+
+    isHidden: function () {
+        return this.model.get('completed') ?
+        app.TodoFilter === 'active' :
+        app.TodoFilter === 'completed';
     },
     // Switch this view into `"editing"` mode, displaying the input field
     edit: function () {

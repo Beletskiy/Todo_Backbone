@@ -1,13 +1,16 @@
-var Workspace = Backbone.Router.extend({
-    routes: {
-        '*filter': 'setFilter'
-    },
-    setFilter: function (param) {
-        // задание текущего фильтра
-        // генерация события filter коллекции, вызывающего
-        // скрытие/отображение задач
-        window.app.Todos.trigger('filter');
-    }
-});
-app.TodoRouter = new Workspace();
-Backbone.history.start();
+var app = app || {};
+
+    var Workspace = Backbone.Router.extend({
+        routes: {
+            '*filter': 'setFilter'
+        },
+        setFilter: function (param) {
+            // Set the current filter to be used
+            window.app.TodoFilter = param || '';
+            // Trigger a collection filter event, causing hiding/unhiding of Todo view items
+            app.Todos.trigger('filter');
+        }
+    });
+
+    app.TodoRouter = new Workspace();
+    Backbone.history.start();
